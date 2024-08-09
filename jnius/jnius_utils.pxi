@@ -1,3 +1,6 @@
+_JVM_EXCEPTIONS_IGNORED = []
+
+
 cdef str_for_c(s):
     return s.encode('utf-8')
 
@@ -76,7 +79,9 @@ cdef void check_exception(JNIEnv *j_env) except *:
             j_env[0].DeleteLocalRef(j_env, e_msg)
         j_env[0].DeleteLocalRef(j_env, exc)
 
-        raise JavaException('JVM exception occurred: %s' % (pymsg + " " + str(pyexcclass) if pymsg is not None else pyexcclass), pyexcclass, pymsg, pystack)
+        message = pymsg + " " + str(pyexcclass) if pymsg is not None else pyexcclass
+        if message not in _JVM_EXCEPTIONS_IGNORED:
+            raise JavaException('JVM exception occurred: %s' % message, pyexcclass, pymsg, pystack)
 
 
 cdef void _append_exception_trace_messages(
@@ -529,3 +534,7 @@ cdef readable_sig(sig, is_var):
             i += 1
 
     return args, rtn
+
+
+def ignore_jvm_exceptions(msgs):
+    _JVM_EXCEPTIONS_IGNORED.extend(msgs)
