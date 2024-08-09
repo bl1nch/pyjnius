@@ -1,3 +1,4 @@
+from libc.stdint cimport uintptr_t
 
 cdef JNIEnv *default_env = NULL
 
@@ -23,3 +24,10 @@ cdef JNIEnv *get_jnienv() except NULL:
 def detach():
     jvm[0].DetachCurrentThread(jvm)
 
+
+def get_jnienv_addr():
+    return <uintptr_t>default_env
+
+
+def get_jvm_addr():
+    return <uintptr_t>jvm

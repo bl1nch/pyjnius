@@ -196,7 +196,7 @@ def identify_hierarchy(cls, level, concrete=True):
 # NOTE: if you change the include_protected or include_private default values,
 # you also must change the classparams default value in MetaJavaClass.__new__
 # and MetaJavaClass.get_javaclass.
-def autoclass(clsname, include_protected=True, include_private=True):
+def autoclass(clsname, include_protected=True, include_private=True, addr=None):
     jniname = clsname.replace('.', '/')
     cls = MetaJavaClass.get_javaclass(jniname, classparams=(include_protected, include_private))
     if cls:
@@ -206,7 +206,7 @@ def autoclass(clsname, include_protected=True, include_private=True):
     cls_start_packagename = '.'.join(clsname.split('.')[:-1])
 
     # c = Class.forName(clsname)
-    c = find_javaclass(clsname)
+    c = find_javaclass(clsname, addr)
     if c is None:
         raise Exception('Java class {0} not found'.format(c))
         return None
