@@ -241,23 +241,24 @@ def autoclass(clsname, include_protected=True, include_private=True, addr=None):
         # to get what is in this class; other parts of the hierarchy will be found
         # in those respective classes.
         methods = cls.getDeclaredMethods()
-        methods_name = [x.getName() for x in methods]
-        # collect all methods declared by this class of the hierarchy for later traversal
-        for index, method in enumerate(methods):
-            method_modifier = method.getModifiers()
-            if Modifier.isProtected(method_modifier) and not include_protected:
-                continue
-            if Modifier.isPrivate(method_modifier) and not include_private:
-                continue
-            if not (Modifier.isPublic(method_modifier) or
-                    Modifier.isProtected(method_modifier) or
-                    Modifier.isPrivate(method_modifier)):
-                if cls_start_packagename == cls_packagename and not include_protected:
+        if methods:
+            methods_name = [x.getName() for x in methods]
+            # collect all methods declared by this class of the hierarchy for later traversal
+            for index, method in enumerate(methods):
+                method_modifier = method.getModifiers()
+                if Modifier.isProtected(method_modifier) and not include_protected:
                     continue
-                if cls_start_packagename != cls_packagename and not include_private:
+                if Modifier.isPrivate(method_modifier) and not include_private:
                     continue
-            name = methods_name[index]
-            cls_methods[name].append((cls, method, level))
+                if not (Modifier.isPublic(method_modifier) or
+                        Modifier.isProtected(method_modifier) or
+                        Modifier.isPrivate(method_modifier)):
+                    if cls_start_packagename == cls_packagename and not include_protected:
+                        continue
+                    if cls_start_packagename != cls_packagename and not include_private:
+                        continue
+                name = methods_name[index]
+                cls_methods[name].append((cls, method, level))
     
         fields = cls.getDeclaredFields()
         for field in fields:
