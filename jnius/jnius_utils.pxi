@@ -1,4 +1,4 @@
-_JVM_EXCEPTIONS_IGNORED = []
+cdef list _JVM_EXCEPTIONS_IGNORED = []
 
 
 cdef str_for_c(s):
