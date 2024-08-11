@@ -212,6 +212,8 @@ def autoclass(clsname, include_protected=True, include_private=True, addr=None):
         return None
 
     classDict['_class'] = c
+    if addr:
+        classDict['__addr__'] = addr
 
     constructors = []
     for constructor in c.getConstructors():

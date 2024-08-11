@@ -171,6 +171,7 @@ class MetaJavaClass(MetaJavaBase):
         cdef bytes __javaclass__ = <bytes>classDict['__javaclass__']
         cdef bytes __javainterfaces__ = <bytes>classDict.get('__javainterfaces__', b'')
         cdef bytes __javabaseclass__ = <bytes>classDict.get('__javabaseclass__', b'')
+        cdef jlong __addr__ = <jlong>classDict.get('__addr__', 0)
         cdef jmethodID getProxyClass, getClassLoader
         cdef jclass *interfaces
         cdef jobject *jargs
@@ -206,8 +207,10 @@ class MetaJavaClass(MetaJavaBase):
                         ' {0}'.format(__javaclass__))
         else:
             class_name = str_for_c(__javaclass__)
-            jcs.j_cls = j_env[0].FindClass(j_env,
-                    <char *>class_name)
+            if __addr__ != <jlong>0:
+                jcs.j_cls = <jclass>(<uintptr_t>(__addr__))
+            else:
+                jcs.j_cls = j_env[0].FindClass(j_env, <char *>class_name)
             if jcs.j_cls == NULL:
                 raise JavaException('Unable to find the class'
                         ' {0}'.format(__javaclass__))
